@@ -1,15 +1,14 @@
 database:
   # If you want to use SQLLite, please replace this option to:
   # jdbc:sqlite:%plugin_folder%/data.db
-  jdbc-url: 'jdbc:mysql://localhost:3306/economylimit?useSSL=false&autoReconnect=true'
+  jdbc-url: "jdbc:mysql://localhost:3306/economylimit?useSSL=false&autoReconnect=true"
   # If you are using old Minecraft version server, please replace this option to:
   # com.mysql.jdbc.Driver
   # If you want to use SQLLite, please replace this option to:
   # org.sqlite.JDBC
-  jdbc-class: 'com.mysql.cj.jdbc.Driver'
-  # If you want to use SQLLite, set enabled option to false.
+  jdbc-class: "com.mysql.cj.jdbc.Driver"
+  # If you want to use SQLLite, remove the 2 options.
   properties:
-    enabled: true
     user: root
     password: 123456
 

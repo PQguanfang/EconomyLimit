@@ -13,17 +13,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public final class EconomyLimit extends JavaPlugin {
 
     public static JavaPlugin instance;
     // 玩家UUID
-    public static Set<String> getCreatedPlayer;
+    public static Set<String> getCreatedPlayer = new HashSet<>();
 
-    public static Map<Player, LimitsManager> getLimitMap;
+    public static Map<Player, LimitsManager> getLimitMap = new HashMap<>();
 
     @Override
     public void onLoad() {

@@ -13,7 +13,7 @@ public class MainCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length <= 1) {
             sender.sendMessage(Messages.GetMessages("error-args"));
-            return false;
+            return true;
         }
         if (args.length == 2) {
             if (args[0].equals("reset")) {

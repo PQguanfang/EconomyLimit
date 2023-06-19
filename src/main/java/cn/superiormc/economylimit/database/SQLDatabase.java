@@ -26,10 +26,9 @@ public class SQLDatabase {
 
     public static void InitSQL() {
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fTrying connect to SQL database...");
-        String jdbcUrl = Database.GetDatabaseUrl();
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(Database.GetDatabaseClass());
-        config.setJdbcUrl(jdbcUrl);
+        config.setJdbcUrl(Database.GetDatabaseUrl());
         if ((Database.GetDatabaseUser() != null && Database.GetDatabasePassword() != null)) {
             config.setUsername(Database.GetDatabaseUser());
             config.setPassword(Database.GetDatabasePassword());
