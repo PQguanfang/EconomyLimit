@@ -11,11 +11,11 @@ import org.bukkit.entity.Player;
 public class MainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length <= 1) {
+        if (args.length == 0) {
             sender.sendMessage(Messages.GetMessages("error-args"));
             return true;
         }
-        if (args.length == 2) {
+        if (args.length == 1) {
             if (args[0].equals("reset")) {
                 if (sender instanceof Player) {
                     if (sender.hasPermission("economylimit.use.reset")) {
@@ -34,16 +34,16 @@ public class MainCommand implements CommandExecutor {
                 }
             }
         }
-        if (args.length == 3) {
+        if (args.length == 2) {
             if (args[0].equals("reset")) {
                 if (sender.hasPermission("economylimit.admin.reset")) {
-                    if (Bukkit.getPlayer(args[2]) == null) {
+                    if (Bukkit.getPlayer(args[1]) == null) {
                         sender.sendMessage(Messages.GetMessages("error-player-not-found"));
                         return true;
                     }
                     else {
                         sender.sendMessage(Messages.GetMessages("reseted"));
-                        SQLDatabase.ResetData(Bukkit.getPlayer(args[2]));
+                        SQLDatabase.ResetData(Bukkit.getPlayer(args[1]));
                         return true;
                     }
                 }

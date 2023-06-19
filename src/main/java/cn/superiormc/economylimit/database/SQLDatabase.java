@@ -10,7 +10,6 @@ import cn.superiormc.economylimit.configs.Database;
 import cn.superiormc.economylimit.configs.VanillaExp;
 import cn.superiormc.economylimit.configs.VanillaLevels;
 import cn.superiormc.economylimit.managers.LimitsManager;
-import cn.superiormc.economylimit.utils.GetPlayerLimit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -111,8 +110,8 @@ public class SQLDatabase {
     public static void ResetData(Player player) {
         sqlManager.createUpdate("economylimit")
                 .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
-                .setColumnValues("vanilla_exp", GetPlayerLimit.GetVanillaExpLimit(player))
-                .setColumnValues("vanilla_levels", GetPlayerLimit.GetVanillaLevelsLimit(player))
+                .setColumnValues("vanilla_exp", 0)
+                .setColumnValues("vanilla_levels", 0)
                 .build()
                 .executeAsync();
     }
