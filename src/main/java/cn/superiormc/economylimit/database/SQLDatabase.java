@@ -64,8 +64,9 @@ public class SQLDatabase {
     public static void InsertData(Player player) {
         sqlManager.createInsert("economylimit")
                 .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
-                .setParams(player.getUniqueId().toString(), GetPlayerLimit.GetVanillaExpLimit(player))
+                .setParams(player.getUniqueId().toString(), GetPlayerLimit.GetVanillaExpLimit(player), GetPlayerLimit.GetVanillaLevelsLimit(player))
                 .executeAsync();
+        CheckData(player);
     }
 
     public static void CheckData(Player player) {
@@ -76,21 +77,22 @@ public class SQLDatabase {
                 .build();
         queryAction.executeAsync((result) ->
         {
-            if (result.getResultSet() != null){
-                EconomyLimit.getCreatedPlayer.add(result.getResultSet().getString("uuid"));
-                Map<String, Integer> limitMap = new HashMap<>();
-                if (VanillaExp.GetVanillaExpEnabled()) {
-                    limitMap.put("Vanilla Exp", result.getResultSet().getInt("vanilla_exp"));
-                }
-                if (VanillaLevels.GetVanillaLevelsEnabled()) {
-                    limitMap.put("Vanilla Levels", result.getResultSet().getInt("vanilla_levels"));
-                }
-                // so on...
-                if (EconomyLimit.getLimitMap.containsKey(player)) {
-                    EconomyLimit.getLimitMap.replace(player, new LimitsManager(player, limitMap));
-                }
-                else {
-                    EconomyLimit.getLimitMap.put(player, new LimitsManager(player, limitMap));
+            if (result.getResultSet().wasNull()) {
+                while (result.getResultSet().next()) {
+                    EconomyLimit.getCreatedPlayer.add(result.getResultSet().getString("uuid"));
+                    Map<String, Integer> limitMap = new HashMap<>();
+                    if (VanillaExp.GetVanillaExpEnabled()) {
+                        limitMap.put("Vanilla Exp", result.getResultSet().getInt("vanilla_exp"));
+                    }
+                    if (VanillaLevels.GetVanillaLevelsEnabled()) {
+                        limitMap.put("Vanilla Levels", result.getResultSet().getInt("vanilla_levels"));
+                    }
+                    // so on...
+                    if (EconomyLimit.getLimitMap.containsKey(player)) {
+                        EconomyLimit.getLimitMap.replace(player, new LimitsManager(player, limitMap));
+                    } else {
+                        EconomyLimit.getLimitMap.put(player, new LimitsManager(player, limitMap));
+                    }
                 }
             }
             else {

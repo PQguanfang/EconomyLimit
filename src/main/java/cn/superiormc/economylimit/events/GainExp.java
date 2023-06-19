@@ -12,7 +12,6 @@ import org.bukkit.event.player.PlayerExpChangeEvent;
 public class GainExp implements Listener {
     @EventHandler
     public void GainExpEvent(PlayerExpChangeEvent event) {
-        Bukkit.getConsoleSender().sendMessage("" + EconomyLimit.getLimitMap.get(event.getPlayer()).GetPlayerLimit("Vanilla Exp"));
         if(event.getPlayer() == null) {
             return;
         }
@@ -26,5 +25,6 @@ public class GainExp implements Listener {
                 }
             }
         }
+        Bukkit.getConsoleSender().sendMessage("" + EconomyLimit.getLimitMap.get(event.getPlayer()).GetPlayerLimit("Vanilla Exp"));
     }
 }
