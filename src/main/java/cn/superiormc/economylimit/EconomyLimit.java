@@ -1,5 +1,7 @@
 package cn.superiormc.economylimit;
 
+import cn.superiormc.economylimit.commands.MainCommand;
+import cn.superiormc.economylimit.commands.MainTab;
 import cn.superiormc.economylimit.configs.VanillaExp;
 import cn.superiormc.economylimit.configs.VanillaLevels;
 import cn.superiormc.economylimit.database.SQLDatabase;
@@ -12,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public final class EconomyLimit extends JavaPlugin {
@@ -47,6 +50,10 @@ public final class EconomyLimit extends JavaPlugin {
         }
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuit(), this);
+    }
 
+    public void Commands() {
+        Objects.requireNonNull(Bukkit.getPluginCommand("economylimit")).setExecutor(new MainCommand());
+        Objects.requireNonNull(Bukkit.getPluginCommand("economylimit")).setTabCompleter(new MainTab());
     }
 }

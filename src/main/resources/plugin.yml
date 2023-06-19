@@ -2,3 +2,9 @@ name: EconomyLimit
 version: '${project.version}'
 main: cn.superiormc.economylimit.EconomyLimit
 api-version: 1.13
+commands:
+  economylimit:
+    aliases:
+      - "el"
+    usage: "/economylimit"
+    description: "EconomyLimit Main Command."
