@@ -19,7 +19,7 @@ public class LimitsManager {
 
     public void UpdatePlayerLimit(String economyType, int value) {
         if (limitMap.containsKey(economyType)) {
-            limitMap.replace(economyType, limitMap.get(player) + value);
+            limitMap.replace(economyType, limitMap.get(economyType) + value);
         }
     }
 }

@@ -60,6 +60,9 @@ public class SQLDatabase {
     }
 
     public static void InsertData(Player player) {
+        if (EconomyLimit.getLimitMap.containsKey(player)) {
+            return;
+        }
         sqlManager.createInsert("economylimit")
                 .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
                 .setParams(player.getUniqueId().toString(), 0, 0)
@@ -99,8 +102,8 @@ public class SQLDatabase {
     public static void UpdateData(Player player) {
         sqlManager.createUpdate("economylimit")
                 .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
-                .setColumnValues("vanilla-exp", EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Exp"))
-                .setColumnValues("vanilla-levels", EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Levels"))
+                .setColumnValues("vanilla_exp", EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Exp"))
+                .setColumnValues("vanilla_levels", EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Levels"))
                 .build()
                 .executeAsync();
     }
@@ -108,8 +111,8 @@ public class SQLDatabase {
     public static void ResetData(Player player) {
         sqlManager.createUpdate("economylimit")
                 .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
-                .setColumnValues("vanilla-exp", GetPlayerLimit.GetVanillaExpLimit(player))
-                .setColumnValues("vanilla-levels", GetPlayerLimit.GetVanillaLevelsLimit(player))
+                .setColumnValues("vanilla_exp", GetPlayerLimit.GetVanillaExpLimit(player))
+                .setColumnValues("vanilla_levels", GetPlayerLimit.GetVanillaLevelsLimit(player))
                 .build()
                 .executeAsync();
     }
