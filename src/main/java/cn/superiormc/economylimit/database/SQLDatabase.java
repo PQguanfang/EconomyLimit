@@ -1,0 +1,121 @@
+package cn.superiormc.economylimit.database;
+
+import cc.carm.lib.easysql.EasySQL;
+import cc.carm.lib.easysql.api.SQLManager;
+import cc.carm.lib.easysql.api.action.query.QueryAction;
+import cc.carm.lib.easysql.api.enums.IndexType;
+import cc.carm.lib.easysql.api.enums.NumberType;
+import cc.carm.lib.easysql.hikari.HikariConfig;
+import cn.superiormc.economylimit.EconomyLimit;
+import cn.superiormc.economylimit.configs.Database;
+import cn.superiormc.economylimit.configs.VanillaExp;
+import cn.superiormc.economylimit.configs.VanillaLevels;
+import cn.superiormc.economylimit.managers.LimitsManager;
+import cn.superiormc.economylimit.utils.GetPlayerLimit;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+public class SQLDatabase {
+    public static SQLManager sqlManager;
+
+    public static void InitSQL() {
+        Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fTrying connect to SQL database...");
+        String jdbcUrl = Database.GetDatabaseUrl();
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName(Database.GetDatabaseClass());
+        config.setJdbcUrl(jdbcUrl);
+        if ((Database.GetDatabaseUser() != null && Database.GetDatabasePassword() != null)) {
+            config.setUsername(Database.GetDatabaseUser());
+            config.setPassword(Database.GetDatabasePassword());
+        }
+        sqlManager = EasySQL.createManager(config);
+        try {
+            if (!sqlManager.getConnection().isValid(5)) {
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §cFailed connect to SQL database!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        CreateTable();
+    }
+
+    public static void CloseSQL() {
+        if (Objects.nonNull(sqlManager)) {
+            EasySQL.shutdownManager(sqlManager);
+            sqlManager = null;
+        }
+    }
+
+    public static void CreateTable() {
+        sqlManager.createTable("economylimit")
+                .addColumn("uuid", "VARCHAR(36)")
+                .addColumn("vanilla_exp", "INT")
+                .addColumn("vanilla_levels", "INT")
+                .addColumn("custom", "INT")
+                .setIndex(IndexType.PRIMARY_KEY, null, "uuid")
+                .build().execute(null);
+    }
+
+    public static void InsertData(Player player) {
+        sqlManager.createInsert("economylimit")
+                .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
+                .setParams(player.getUniqueId().toString(), GetPlayerLimit.GetVanillaExpLimit(player))
+                .executeAsync();
+    }
+
+    public static void CheckData(Player player) {
+        QueryAction queryAction = sqlManager.createQuery()
+                .inTable("economylimit")
+                .selectColumns()
+                .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
+                .build();
+        queryAction.executeAsync((result) ->
+        {
+            if (result.getResultSet() != null){
+                EconomyLimit.getCreatedPlayer.add(result.getResultSet().getString("uuid"));
+                Map<String, Integer> limitMap = new HashMap<>();
+                if (VanillaExp.GetVanillaExpEnabled()) {
+                    limitMap.put("Vanilla Exp", result.getResultSet().getInt("vanilla_exp"));
+                }
+                if (VanillaLevels.GetVanillaLevelsEnabled()) {
+                    limitMap.put("Vanilla Levels", result.getResultSet().getInt("vanilla_levels"));
+                }
+                // so on...
+                if (EconomyLimit.getLimitMap.containsKey(player)) {
+                    EconomyLimit.getLimitMap.replace(player, new LimitsManager(player, limitMap));
+                }
+                else {
+                    EconomyLimit.getLimitMap.put(player, new LimitsManager(player, limitMap));
+                }
+            }
+            else {
+                InsertData(player);
+            }
+        });
+    }
+
+    public static void UpdateData(Player player) {
+        sqlManager.createUpdate("economylimit")
+                .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
+                .setColumnValues("vanilla-exp", EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Exp"))
+                .setColumnValues("vanilla-levels", EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Levels"))
+                .build()
+                .executeAsync();
+    }
+
+    public static void ResetData(Player player) {
+        sqlManager.createUpdate("economylimit")
+                .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
+                .setColumnValues("vanilla-exp", GetPlayerLimit.GetVanillaExpLimit(player))
+                .setColumnValues("vanilla-levels", GetPlayerLimit.GetVanillaLevelsLimit(player))
+                .build()
+                .executeAsync();
+    }
+
+}
