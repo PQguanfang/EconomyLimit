@@ -34,6 +34,7 @@ public final class EconomyLimit extends JavaPlugin {
     public void onEnable() {
         instance = this;
         Events();
+        Commands();
         SQLDatabase.InitSQL();
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fPlugin is loaded. Author: PQguanfang.");
     }
