@@ -4,7 +4,6 @@ import cc.carm.lib.easysql.EasySQL;
 import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.lib.easysql.api.action.query.QueryAction;
 import cc.carm.lib.easysql.api.enums.IndexType;
-import cc.carm.lib.easysql.api.enums.NumberType;
 import cc.carm.lib.easysql.hikari.HikariConfig;
 import cn.superiormc.economylimit.EconomyLimit;
 import cn.superiormc.economylimit.configs.Database;
@@ -15,7 +14,6 @@ import cn.superiormc.economylimit.utils.GetPlayerLimit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +62,7 @@ public class SQLDatabase {
     public static void InsertData(Player player) {
         sqlManager.createInsert("economylimit")
                 .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
-                .setParams(player.getUniqueId().toString(), GetPlayerLimit.GetVanillaExpLimit(player), GetPlayerLimit.GetVanillaLevelsLimit(player))
+                .setParams(player.getUniqueId().toString(), 0, 0)
                 .executeAsync();
         CheckData(player);
     }
@@ -72,32 +70,29 @@ public class SQLDatabase {
     public static void CheckData(Player player) {
         QueryAction queryAction = sqlManager.createQuery()
                 .inTable("economylimit")
-                .selectColumns()
+                .selectColumns("uuid", "vanilla_exp", "vanilla_levels")
                 .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
                 .build();
         queryAction.executeAsync((result) ->
         {
-            if (result.getResultSet().wasNull()) {
-                while (result.getResultSet().next()) {
-                    EconomyLimit.getCreatedPlayer.add(result.getResultSet().getString("uuid"));
-                    Map<String, Integer> limitMap = new HashMap<>();
-                    if (VanillaExp.GetVanillaExpEnabled()) {
-                        limitMap.put("Vanilla Exp", result.getResultSet().getInt("vanilla_exp"));
-                    }
-                    if (VanillaLevels.GetVanillaLevelsEnabled()) {
-                        limitMap.put("Vanilla Levels", result.getResultSet().getInt("vanilla_levels"));
-                    }
-                    // so on...
-                    if (EconomyLimit.getLimitMap.containsKey(player)) {
-                        EconomyLimit.getLimitMap.replace(player, new LimitsManager(player, limitMap));
-                    } else {
-                        EconomyLimit.getLimitMap.put(player, new LimitsManager(player, limitMap));
-                    }
+            if (result.getResultSet().next()) {
+                EconomyLimit.getCreatedPlayer.add(result.getResultSet().getString("uuid"));
+                Map<String, Integer> limitMap = new HashMap<>();
+                if (VanillaExp.GetVanillaExpEnabled()) {
+                    limitMap.put("Vanilla Exp", result.getResultSet().getInt("vanilla_exp"));
                 }
+                if (VanillaLevels.GetVanillaLevelsEnabled()) {
+                    limitMap.put("Vanilla Levels", result.getResultSet().getInt("vanilla_levels"));
+                }
+                // so on...
+                if (EconomyLimit.getLimitMap.containsKey(player)) {
+                    EconomyLimit.getLimitMap.replace(player, new LimitsManager(player, limitMap));
+                } else {
+                    EconomyLimit.getLimitMap.put(player, new LimitsManager(player, limitMap));
+                }
+                return;
             }
-            else {
-                InsertData(player);
-            }
+            InsertData(player);
         });
     }
 

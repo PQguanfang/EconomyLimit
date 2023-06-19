@@ -9,8 +9,8 @@ public class LimitsManager {
     private Map<String, Integer> limitMap;
 
     public LimitsManager(Player player, Map<String, Integer> limitMap) {
-        player = this.player;
-        limitMap = this.limitMap;
+        this.player = player;
+        this.limitMap = limitMap;
     }
 
     public int GetPlayerLimit(String economyType) {
