@@ -99,20 +99,18 @@ public class SQLDatabase {
     }
 
     public static void UpdateData(Player player) {
-        sqlManager.createUpdate("economylimit")
-                .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
-                .setColumnValues("vanilla_exp", EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Exp"))
-                .setColumnValues("vanilla_levels", EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Levels"))
-                .build()
+        sqlManager.createReplace("economylimit")
+                .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
+                .setParams(player.getUniqueId().toString(),
+                        EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Exp"),
+                        EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Levels"))
                 .executeAsync();
     }
 
     public static void ResetData(Player player) {
-        sqlManager.createUpdate("economylimit")
-                .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
-                .setColumnValues("vanilla_exp", 0)
-                .setColumnValues("vanilla_levels", 0)
-                .build()
+        sqlManager.createReplace("economylimit")
+                .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
+                .setParams(player.getUniqueId().toString(), 0, 0)
                 .executeAsync();
     }
 
