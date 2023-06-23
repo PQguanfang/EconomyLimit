@@ -6,6 +6,7 @@ import cn.superiormc.economylimit.configs.VanillaExp;
 import cn.superiormc.economylimit.configs.VanillaLevels;
 import cn.superiormc.economylimit.database.SQLDatabase;
 import cn.superiormc.economylimit.events.GainExp;
+import cn.superiormc.economylimit.events.GainLevels;
 import cn.superiormc.economylimit.events.PlayerJoin;
 import cn.superiormc.economylimit.events.PlayerQuit;
 import cn.superiormc.economylimit.managers.LimitsManager;
@@ -44,8 +45,11 @@ public final class EconomyLimit extends JavaPlugin {
     }
 
     public void Events() {
-        if(VanillaExp.GetVanillaExpEnabled() || VanillaLevels.GetVanillaLevelsEnabled()) {
+        if(VanillaExp.GetVanillaExpEnabled()) {
             Bukkit.getPluginManager().registerEvents(new GainExp(), this);
+        }
+        if(VanillaLevels.GetVanillaLevelsEnabled()) {
+            Bukkit.getPluginManager().registerEvents(new GainLevels(), this);
         }
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerQuit(), this);
