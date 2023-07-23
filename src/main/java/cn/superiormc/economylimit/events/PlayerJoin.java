@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class PlayerJoin implements Listener {
     @EventHandler
     public void JoinEvent(PlayerJoinEvent event) {
-        SQLDatabase.CheckData(event.getPlayer());
+        SQLDatabase.CheckDailyResetData(event.getPlayer());
+        SQLDatabase.CheckEconomyData(event.getPlayer());
     }
 }

@@ -14,4 +14,8 @@ public class Messages {
             return textValue;
         }
     }
+    public static String GetActionMessages(String textName){
+        textName = ColorParser.parse(textName);
+        return textName;
+    }
 }

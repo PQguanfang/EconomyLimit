@@ -14,6 +14,9 @@ public class LimitsManager {
     }
 
     public int GetPlayerLimit(String economyType) {
+        if (limitMap.get(economyType) == null) {
+            return 0;
+        }
         return limitMap.get(economyType);
     }
 
