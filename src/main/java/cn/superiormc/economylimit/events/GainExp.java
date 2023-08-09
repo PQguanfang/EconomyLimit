@@ -1,6 +1,7 @@
 package cn.superiormc.economylimit.events;
 
 import cn.superiormc.economylimit.EconomyLimit;
+import cn.superiormc.economylimit.configs.Messages;
 import cn.superiormc.economylimit.configs.VanillaExp;
 import cn.superiormc.economylimit.utils.GetPlayerLimit;
 import org.bukkit.event.EventHandler;
@@ -18,6 +19,10 @@ public class GainExp implements Listener {
         } else {
             if (EconomyLimit.getLimitMap.containsKey(event.getPlayer())) {
                 if (EconomyLimit.getLimitMap.get(event.getPlayer()).GetPlayerLimit("Vanilla Exp") >= GetPlayerLimit.GetVanillaExpLimit(event.getPlayer())) {
+                    if (!EconomyLimit.getWarnedPlayer.contains(event.getPlayer())) {
+                        event.getPlayer().sendMessage(Messages.GetMessages("vanilla-exp-rached"));
+                        EconomyLimit.getWarnedPlayer.add(event.getPlayer());
+                    }
                     event.setAmount(0);
                 }
                 else {

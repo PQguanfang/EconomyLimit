@@ -24,10 +24,8 @@ public class LimitsManager {
 
     public void UpdatePlayerLimit(String economyType, int value) {
         if (limitMap.containsKey(economyType)) {
-            Bukkit.getConsoleSender().sendMessage("111");
             limitMap.replace(economyType, limitMap.get(economyType) + value);
         }
-        Bukkit.getConsoleSender().sendMessage("222");
     }
 
     public void ResetPlayerLimit(String economyType) {

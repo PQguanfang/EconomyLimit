@@ -29,6 +29,8 @@ public final class EconomyLimit extends JavaPlugin {
 
     private static Placeholder papi = null;
 
+    public static Set<Player> getWarnedPlayer = new HashSet<>();
+
     public static Map<Player, LimitsManager> getLimitMap = new HashMap<>();
 
     public static Map<Player, ZonedDateTime> getDataMap = new HashMap<>();
