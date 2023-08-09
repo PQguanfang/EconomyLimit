@@ -31,7 +31,15 @@ vanilla-levels:
     mvp: 300
   bypass-permission: "economylimit.bypass"
 
+#console-actions:
+  #- 'message: Hello!'
+
+#per-player-actions:
+  #- 'console_command: economylimit reset %player%'
+
 messages:
+  vanilla-exp-rached: "&#98FB98[EconomyLimit] &cYou have reached today exp limit!"
+  vanilla-levels-rached: "&#98FB98[EconomyLimit] &cYou have reached today level limit!"
   error-args: "&#98FB98[EconomyLimit] &cWrong command usage, if you need help, use /economylimit help!"
   error-only-in-game: "&#98FB98[EconomyLimit] &cYou have to use this command in game!"
   error-miss-permission: "&#98FB98[EconomyLimit] &cYou don't have permission to use this command!"

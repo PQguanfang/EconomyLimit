@@ -25,9 +25,9 @@ public class ResetTask {
                 EconomyLimit.getLimitMap.get(player).ResetPlayerLimit("Vanilla Levels");
             }
         }
-        if (!EconomyLimit.getIntMap.contains(GetNowingTime()) && GetNowingTime().getHour() == DailyReset.GetResetHour() &&
-                GetNowingTime().getMinute() == DailyReset.GetResetMinute() &&
-                GetNowingTime().getSecond() == DailyReset.GetResetSecond()) {
+        if (EconomyLimit.getIntMap.isEmpty() && GetNowingTime().getHour() >= DailyReset.GetResetHour() &&
+                GetNowingTime().getMinute() >= DailyReset.GetResetMinute() &&
+                GetNowingTime().getSecond() >= DailyReset.GetResetSecond()) {
             Actions.DoIt(Action.GetConsoleActions());
             EconomyLimit.getIntMap.add(GetNowingTime());
         }

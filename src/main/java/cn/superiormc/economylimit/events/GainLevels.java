@@ -22,7 +22,7 @@ public class GainLevels implements Listener {
                 if (EconomyLimit.getLimitMap.get(event.getPlayer()).GetPlayerLimit("Vanilla Levels") >= GetPlayerLimit.GetVanillaLevelsLimit(event.getPlayer())) {
                     event.getPlayer().giveExpLevels(-(event.getNewLevel() - event.getOldLevel()));
                     if (!EconomyLimit.getWarnedPlayer.contains(event.getPlayer())) {
-                        event.getPlayer().sendMessage(Messages.GetMessages("vanilla-exp-rached"));
+                        event.getPlayer().sendMessage(Messages.GetMessages("vanilla-levels-rached"));
                         EconomyLimit.getWarnedPlayer.add(event.getPlayer());
                     }
                 }
