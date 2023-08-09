@@ -23,6 +23,13 @@ public class ResetTask {
                 Actions.DoIt(Action.GetPerPlayerActions(), player);
                 EconomyLimit.getLimitMap.get(player).ResetPlayerLimit("Vanilla Exp");
                 EconomyLimit.getLimitMap.get(player).ResetPlayerLimit("Vanilla Levels");
+                ZonedDateTime dateTime = Instant.now().atZone(ZoneId.of(DailyReset.GetTimeZone())).plusDays(1L).
+                        withHour(DailyReset.GetResetHour()).
+                        withMinute(DailyReset.GetResetMinute()).
+                        withSecond(DailyReset.GetResetSecond());
+                if (EconomyLimit.getDataMap.containsKey(player)) {
+                    EconomyLimit.getDataMap.replace(player, dateTime);
+                }
             }
         }
         if (EconomyLimit.getIntMap.isEmpty() && GetNowingTime().getHour() >= DailyReset.GetResetHour() &&
