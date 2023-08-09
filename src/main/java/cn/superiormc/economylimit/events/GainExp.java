@@ -17,9 +17,11 @@ public class GainExp implements Listener {
             return;
         } else {
             if (EconomyLimit.getLimitMap.containsKey(event.getPlayer())) {
-                EconomyLimit.getLimitMap.get(event.getPlayer()).UpdatePlayerLimit("Vanilla Exp", event.getAmount());
                 if (EconomyLimit.getLimitMap.get(event.getPlayer()).GetPlayerLimit("Vanilla Exp") >= GetPlayerLimit.GetVanillaExpLimit(event.getPlayer())) {
-                    event.getPlayer().giveExp(-event.getAmount());
+                    event.setAmount(0);
+                }
+                else {
+                    EconomyLimit.getLimitMap.get(event.getPlayer()).UpdatePlayerLimit("Vanilla Exp", event.getAmount());
                 }
             }
         }

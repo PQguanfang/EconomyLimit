@@ -58,10 +58,6 @@ public class SQLDatabase {
                 .addColumn("vanilla_exp", "INT")
                 .addColumn("vanilla_levels", "INT")
                 .addColumn("custom", "INT")
-                .setIndex(IndexType.PRIMARY_KEY, null, "uuid")
-                .build().execute(null);
-        sqlManager.createTable("economylimit_dailyreset")
-                .addColumn("uuid", "VARCHAR(36)")
                 .addColumn("year", "INT")
                 .addColumn("month", "INT")
                 .addColumn("day", "INT")
@@ -73,33 +69,25 @@ public class SQLDatabase {
     }
 
     public static void InsertData(Player player) {
-        if (EconomyLimit.getLimitMap.containsKey(player)) {
-            return;
-        }
-        sqlManager.createInsert("economylimit")
-                .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
-                .setParams(player.getUniqueId().toString(), 0, 0)
-                .executeAsync();
-        CheckEconomyData(player);
-        if (EconomyLimit.getDataMap.containsKey(player)) {
+        if (EconomyLimit.getLimitMap.containsKey(player) || EconomyLimit.getDataMap.containsKey(player)) {
             return;
         }
         ZonedDateTime dateTime = Instant.now().atZone(ZoneId.of(DailyReset.GetTimeZone())).plusDays(1L).
                 withHour(DailyReset.GetResetHour()).
                 withMinute(DailyReset.GetResetMinute()).
                 withSecond(DailyReset.GetResetSecond());
-        sqlManager.createInsert("economylimit_dailyreset")
-                .setColumnNames("uuid", "year", "month", "day", "hour", "minute", "second")
-                .setParams(player.getUniqueId().toString(), dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(),
+        sqlManager.createInsert("economylimit")
+                .setColumnNames("uuid", "vanilla_exp", "vanilla_levels", "year", "month", "day", "hour", "minute", "second")
+                .setParams(player.getUniqueId().toString(), 0, 0, dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(),
                         dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond())
                 .executeAsync();
-        CheckDailyResetData(player);
+        CheckData(player);
     }
 
-    public static void CheckDailyResetData(Player player) {
+    public static void CheckData(Player player) {
         QueryAction queryAction = sqlManager.createQuery()
-                .inTable("economylimit_dailyreset")
-                .selectColumns("year", "month", "day", "hour", "minute", "second")
+                .inTable("economylimit")
+                .selectColumns("uuid", "vanilla_exp", "vanilla_levels", "year", "month", "day", "hour", "minute", "second")
                 .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
                 .build();
         queryAction.executeAsync((result) ->
@@ -115,26 +103,9 @@ public class SQLDatabase {
                         ZoneId.of(DailyReset.GetTimeZone()));
                 if (EconomyLimit.getDataMap.containsKey(player)) {
                     EconomyLimit.getDataMap.replace(player, dateTime);
-                }
-                else {
+                } else {
                     EconomyLimit.getDataMap.put(player, dateTime);
                 }
-                return;
-            }
-            InsertData(player);
-        });
-    }
-
-    public static void CheckEconomyData(Player player) {
-        QueryAction queryAction = sqlManager.createQuery()
-                .inTable("economylimit")
-                .selectColumns("uuid", "vanilla_exp", "vanilla_levels")
-                .addCondition("uuid = '" + player.getUniqueId().toString() + "'")
-                .build();
-        queryAction.executeAsync((result) ->
-        {
-            if (result.getResultSet().next()) {
-                EconomyLimit.getCreatedPlayer.add(result.getResultSet().getString("uuid"));
                 Map<String, Integer> limitMap = new HashMap<>();
                 if (VanillaExp.GetVanillaExpEnabled()) {
                     limitMap.put("Vanilla Exp", result.getResultSet().getInt("vanilla_exp"));
@@ -150,31 +121,19 @@ public class SQLDatabase {
                 }
                 return;
             }
-            else {
-                InsertData(player);
-            }
+            InsertData(player);
         });
     }
 
     public static void UpdateData(Player player) {
+        ZonedDateTime dateTime = EconomyLimit.getDataMap.get(player);
         sqlManager.createReplace("economylimit")
-                .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
+                .setColumnNames("uuid", "vanilla_exp", "vanilla_levels", "year", "month", "day", "hour", "minute", "second")
                 .setParams(player.getUniqueId().toString(),
                         EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Exp"),
-                        EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Levels"))
-                .executeAsync();
-        ZonedDateTime dateTime = EconomyLimit.getDataMap.get(player);
-        sqlManager.createReplace("economylimit_dailyreset")
-                .setColumnNames("uuid", "year", "month", "day", "hour", "minute", "second")
-                .setParams(player.getUniqueId().toString(), dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(),
+                        EconomyLimit.getLimitMap.get(player).GetPlayerLimit("Vanilla Levels"),
+                        dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(),
                         dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond())
-                .executeAsync();
-    }
-
-    public static void ResetData(Player player) {
-        sqlManager.createReplace("economylimit")
-                .setColumnNames("uuid", "vanilla_exp", "vanilla_levels")
-                .setParams(player.getUniqueId().toString(), 0, 0)
                 .executeAsync();
     }
 

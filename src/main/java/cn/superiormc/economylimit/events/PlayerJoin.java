@@ -1,14 +1,19 @@
 package cn.superiormc.economylimit.events;
 
+import cn.superiormc.economylimit.configs.Database;
 import cn.superiormc.economylimit.database.SQLDatabase;
+import cn.superiormc.economylimit.database.YamlDatabase;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 public class PlayerJoin implements Listener {
     @EventHandler
-    public void JoinEvent(PlayerJoinEvent event) {
-        SQLDatabase.CheckDailyResetData(event.getPlayer());
-        SQLDatabase.CheckEconomyData(event.getPlayer());
+    public void JoinEvent(PlayerLoginEvent event) {
+        if (Database.GetDatabaseEnabled()) {
+            SQLDatabase.CheckData(event.getPlayer());
+        } else {
+            YamlDatabase.CheckData(event.getPlayer());
+        }
     }
 }

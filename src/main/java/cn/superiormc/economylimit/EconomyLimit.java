@@ -3,6 +3,7 @@ package cn.superiormc.economylimit;
 import cn.superiormc.economylimit.commands.MainCommand;
 import cn.superiormc.economylimit.commands.MainTab;
 import cn.superiormc.economylimit.configs.DailyReset;
+import cn.superiormc.economylimit.configs.Database;
 import cn.superiormc.economylimit.configs.VanillaExp;
 import cn.superiormc.economylimit.configs.VanillaLevels;
 import cn.superiormc.economylimit.database.SQLDatabase;
@@ -11,6 +12,7 @@ import cn.superiormc.economylimit.events.GainLevels;
 import cn.superiormc.economylimit.events.PlayerJoin;
 import cn.superiormc.economylimit.events.PlayerQuit;
 import cn.superiormc.economylimit.managers.LimitsManager;
+import cn.superiormc.economylimit.papi.Placeholder;
 import cn.superiormc.economylimit.tasks.ResetTask;
 import cn.superiormc.economylimit.tasks.SaveTask;
 import org.bukkit.Bukkit;
@@ -24,8 +26,8 @@ import java.util.*;
 public final class EconomyLimit extends JavaPlugin {
 
     public static JavaPlugin instance;
-    // 玩家UUID
-    public static Set<String> getCreatedPlayer = new HashSet<>();
+
+    private static Placeholder papi = null;
 
     public static Map<Player, LimitsManager> getLimitMap = new HashMap<>();
 
@@ -43,21 +45,35 @@ public final class EconomyLimit extends JavaPlugin {
         instance = this;
         Events();
         Commands();
-        SQLDatabase.InitSQL();
+        Tasks();
+        if (Database.GetDatabaseEnabled()) {
+            SQLDatabase.InitSQL();
+        }
+        if (EconomyLimit.instance.getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            papi = new Placeholder(this);
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fHooking into PlaceholderAPI...");
+            if (papi.register()){
+                Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fFinished hook!");
+            }
+        }
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fPlugin is loaded. Author: PQguanfang.");
     }
 
     @Override
     public void onDisable() {
-        SQLDatabase.CloseSQL();
+        if (Database.GetDatabaseEnabled()) {
+            SQLDatabase.CloseSQL();
+        }
         Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fPlugin is disabled. Author: PQguanfang.");
     }
 
     public void Events() {
         if(VanillaExp.GetVanillaExpEnabled()) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fEnabled Exp limit.");
             Bukkit.getPluginManager().registerEvents(new GainExp(), this);
         }
         if(VanillaLevels.GetVanillaLevelsEnabled()) {
+            Bukkit.getConsoleSender().sendMessage("§x§9§8§F§B§9§8[EconomyLimit] §fEnabled Levels limit.");
             Bukkit.getPluginManager().registerEvents(new GainLevels(), this);
         }
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);

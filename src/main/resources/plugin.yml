@@ -2,6 +2,7 @@ name: EconomyLimit
 version: '${project.version}'
 main: cn.superiormc.economylimit.EconomyLimit
 api-version: 1.13
+depend: [PlaceholderAPI]
 commands:
   economylimit:
     aliases:

@@ -3,6 +3,9 @@ package cn.superiormc.economylimit.configs;
 import cn.superiormc.economylimit.EconomyLimit;
 
 public class Database {
+    public static boolean GetDatabaseEnabled() {
+        return EconomyLimit.instance.getConfig().getBoolean("database.enabled");
+    }
     public static String GetDatabaseUrl() {
         return EconomyLimit.instance.getConfig().getString("database.jdbc-url").replace("%plugin_folder%", String.valueOf(EconomyLimit.instance.getDataFolder()));
     }

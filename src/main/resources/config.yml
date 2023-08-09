@@ -1,16 +1,19 @@
 database:
-  # If you want to use SQLLite, please replace this option to:
-  # jdbc:sqlite:%plugin_folder%/data.db
+  enabled: false
   jdbc-url: "jdbc:mysql://localhost:3306/economylimit?useSSL=false&autoReconnect=true"
-  # If you are using old Minecraft version server, please replace this option to:
-  # com.mysql.jdbc.Driver
-  # If you want to use SQLLite, please replace this option to:
-  # org.sqlite.JDBC
   jdbc-class: "com.mysql.cj.jdbc.Driver"
-  # If you want to use SQLLite, remove the 2 options.
   properties:
     user: root
     password: 123456
+
+daily-reset:
+  time-zone: "Asia/Shanghai"
+  reset-time:
+    hour: 0
+    minute: 0
+    second: 0
+  period-time: 20
+  auto-save: false
 
 vanilla-exp:
   enabled: true
@@ -34,3 +37,16 @@ messages:
   error-miss-permission: "&#98FB98[EconomyLimit] &cYou don't have permission to use this command!"
   error-player-not-found: "&#98FB98[EconomyLimit] &cPlayer is not found!"
   reseted: "&#98FB98[EconomyLimit] &aReseted the player date!"
+  reloaded: "&#98FB98[EconomyLimit] &aPlugin reloaded!"
+  help:
+    main: |
+      &#98FB98&lEconomyLimit &7Made by @PQguanfang
+      &f/economylimit help &7- View help.
+    main-admin: |
+      &#98FB98&lEconomyLimit &7Made by @PQguanfang
+      &f/economylimit reset <playerName> &7- Reset specified player data.
+      &f/economylimit reload &7- Reload the plugin.
+    main-console: |
+      &#98FB98&lEconomyLimit &7Made by @PQguanfang
+      &f/economylimit reset <playerName> &7- Reset specified player data.
+      &f/economylimit reload &7- Reload the plugin.

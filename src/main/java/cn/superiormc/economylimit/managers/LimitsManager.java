@@ -1,7 +1,9 @@
 package cn.superiormc.economylimit.managers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.lang.management.BufferPoolMXBean;
 import java.util.Map;
 
 public class LimitsManager {
@@ -15,14 +17,22 @@ public class LimitsManager {
 
     public int GetPlayerLimit(String economyType) {
         if (limitMap.get(economyType) == null) {
-            return 0;
+            return -1;
         }
         return limitMap.get(economyType);
     }
 
     public void UpdatePlayerLimit(String economyType, int value) {
         if (limitMap.containsKey(economyType)) {
+            Bukkit.getConsoleSender().sendMessage("111");
             limitMap.replace(economyType, limitMap.get(economyType) + value);
+        }
+        Bukkit.getConsoleSender().sendMessage("222");
+    }
+
+    public void ResetPlayerLimit(String economyType) {
+        if (limitMap.containsKey(economyType)) {
+            limitMap.replace(economyType, 0);
         }
     }
 }

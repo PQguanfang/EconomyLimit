@@ -21,7 +21,8 @@ public class ResetTask {
                         withMinute(DailyReset.GetResetMinute()).
                         withSecond(DailyReset.GetResetSecond()));
                 Actions.DoIt(Action.GetPerPlayerActions(), player);
-                SQLDatabase.ResetData(player);
+                EconomyLimit.getLimitMap.get(player).ResetPlayerLimit("Vanilla Exp");
+                EconomyLimit.getLimitMap.get(player).ResetPlayerLimit("Vanilla Levels");
             }
         }
         if (!EconomyLimit.getIntMap.contains(GetNowingTime()) && GetNowingTime().getHour() == DailyReset.GetResetHour() &&

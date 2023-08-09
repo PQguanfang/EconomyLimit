@@ -1,5 +1,6 @@
 package cn.superiormc.economylimit.commands;
 
+import cn.superiormc.economylimit.EconomyLimit;
 import cn.superiormc.economylimit.configs.Messages;
 import cn.superiormc.economylimit.database.SQLDatabase;
 import org.bukkit.Bukkit;
@@ -20,7 +21,8 @@ public class MainCommand implements CommandExecutor {
                 if (sender instanceof Player) {
                     if (sender.hasPermission("economylimit.use.reset")) {
                         sender.sendMessage(Messages.GetMessages("reseted"));
-                        SQLDatabase.ResetData((Player) sender);
+                        EconomyLimit.getLimitMap.get((Player) sender).ResetPlayerLimit("Vanilla Exp");
+                        EconomyLimit.getLimitMap.get((Player) sender).ResetPlayerLimit("Vanilla Levels");
                         return true;
                     }
                     else {
@@ -30,6 +32,30 @@ public class MainCommand implements CommandExecutor {
                 }
                 else {
                     sender.sendMessage(Messages.GetMessages("error-only-in-game"));
+                    return true;
+                }
+            }
+            else if (args[0].equals("reload")) {
+                if (sender.hasPermission("economylimit.admin.reload")) {
+                    EconomyLimit.instance.reloadConfig();
+                    sender.sendMessage(Messages.GetMessages("reloaded"));
+                    return true;
+                }
+                else {
+                    sender.sendMessage(Messages.GetMessages("error-miss-permission"));
+                    return true;
+                }
+            }
+            else if (args[0].equals("help")) {
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(Messages.GetMessages("help.main-console"));
+                    return true;
+                }
+                else if (sender.hasPermission("spintowin.admin.help")) {
+                    sender.sendMessage(Messages.GetMessages("help.main-admin"));
+                    return true;
+                } else {
+                    sender.sendMessage(Messages.GetMessages("help.main"));
                     return true;
                 }
             }
@@ -43,7 +69,8 @@ public class MainCommand implements CommandExecutor {
                     }
                     else {
                         sender.sendMessage(Messages.GetMessages("reseted"));
-                        SQLDatabase.ResetData(Bukkit.getPlayer(args[1]));
+                        EconomyLimit.getLimitMap.get(Bukkit.getPlayer(args[1])).ResetPlayerLimit("Vanilla Exp");
+                        EconomyLimit.getLimitMap.get(Bukkit.getPlayer(args[1])).ResetPlayerLimit("Vanilla Levels");
                         return true;
                     }
                 }
